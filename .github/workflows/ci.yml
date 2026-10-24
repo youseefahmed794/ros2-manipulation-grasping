@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    container:
+      image: ros:jazzy-ros-base
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update && apt-get install -y --no-install-recommends \
+            python3-pytest \
+            python3-numpy \
+            python3-scipy \
+            python3-matplotlib \
+            python3-yaml \
+            python3-colcon-common-extensions \
+            ros-jazzy-ament-cmake-pytest \
+            ros-jazzy-ament-cmake-python \
+            ros-jazzy-geometry-msgs \
+            ros-jazzy-sensor-msgs \
+            ros-jazzy-trajectory-msgs \
+            ros-jazzy-visualization-msgs \
+            ros-jazzy-tf2-ros \
+            ros-jazzy-tf2-geometry-msgs \
+            libeigen3-dev
+          rm -rf /var/lib/apt/lists/*
+
+      - name: Run unit test suite
+        run: |
+          . /opt/ros/jazzy/setup.sh
+          PYTHONPATH=. pytest test/ -v
+
+      - name: Build with colcon
+        run: |
+          . /opt/ros/jazzy/setup.sh
+          colcon build --packages-select manipulation_grasping --symlink-install
+
+      - name: Run colcon tests
+        run: |
+          . /opt/ros/jazzy/setup.sh
+          colcon test --packages-select manipulation_grasping --event-handlers console_direct+
+          colcon test-result --verbose

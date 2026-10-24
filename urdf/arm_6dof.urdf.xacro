@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="arm_6dof" params="parent *origin">
+
+    <!-- Base link -->
+    <link name="arm_base_link">
+      <visual>
+        <geometry>
+          <cylinder radius="0.08" length="0.08"/>
+        </geometry>
+        <material name="dark_gray">
+          <color rgba="0.2 0.2 0.2 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="0.08" length="0.08"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="4.0"/>
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+      </inertial>
+    </link>
+
+    <joint name="arm_base_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="arm_base_link"/>
+    </joint>
+
+    <!-- Joint 1: Shoulder Pan -->
+    <link name="shoulder_link">
+      <visual>
+        <geometry>
+          <cylinder radius="0.06" length="0.1625"/>
+        </geometry>
+        <origin xyz="0 0 0.08125" rpy="0 0 0"/>
+        <material name="metallic_blue">
+          <color rgba="0.1 0.4 0.8 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="0.06" length="0.1625"/>
+        </geometry>
+        <origin xyz="0 0 0.08125" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="3.7"/>
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.007"/>
+      </inertial>
+    </link>
+
+    <joint name="shoulder_pan_joint" type="revolute">
+      <parent link="arm_base_link"/>
+      <child link="shoulder_link"/>
+      <origin xyz="0 0 0.04" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-3.14159" upper="3.14159" effort="150.0" velocity="3.14"/>
+      <dynamics damping="0.5" friction="0.1"/>
+    </joint>
+
+    <!-- Joint 2: Shoulder Lift -->
+    <link name="upper_arm_link">
+      <visual>
+        <geometry>
+          <box size="0.08 0.08 0.425"/>
+        </geometry>
+        <origin xyz="0 0 0.2125" rpy="0 0 0"/>
+        <material name="light_gray">
+          <color rgba="0.8 0.8 0.85 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.08 0.08 0.425"/>
+        </geometry>
+        <origin xyz="0 0 0.2125" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="8.3"/>
+        <inertia ixx="0.13" ixy="0.0" ixz="0.0" iyy="0.13" iyz="0.0" izz="0.01"/>
+      </inertial>
+    </link>
+
+    <joint name="shoulder_lift_joint" type="revolute">
+      <parent link="shoulder_link"/>
+      <child link="upper_arm_link"/>
+      <origin xyz="0 0.1 0.1625" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-3.14159" upper="3.14159" effort="150.0" velocity="3.14"/>
+      <dynamics damping="0.5" friction="0.1"/>
+    </joint>
+
+    <!-- Joint 3: Elbow -->
+    <link name="forearm_link">
+      <visual>
+        <geometry>
+          <box size="0.06 0.06 0.3922"/>
+        </geometry>
+        <origin xyz="0 0 0.1961" rpy="0 0 0"/>
+        <material name="metallic_blue"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.06 0.06 0.3922"/>
+        </geometry>
+        <origin xyz="0 0 0.1961" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="2.3"/>
+        <inertia ixx="0.03" ixy="0.0" ixz="0.0" iyy="0.03" iyz="0.0" izz="0.003"/>
+      </inertial>
+    </link>
+
+    <joint name="elbow_joint" type="revolute">
+      <parent link="upper_arm_link"/>
+      <child link="forearm_link"/>
+      <origin xyz="0 -0.05 0.425" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-3.14159" upper="3.14159" effort="150.0" velocity="3.14"/>
+      <dynamics damping="0.4" friction="0.1"/>
+    </joint>
+
+    <!-- Joint 4: Wrist 1 -->
+    <link name="wrist_1_link">
+      <visual>
+        <geometry>
+          <cylinder radius="0.04" length="0.1"/>
+        </geometry>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
+        <material name="dark_gray"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="0.04" length="0.1"/>
+        </geometry>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="1.2"/>
+        <inertia ixx="0.002" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.001"/>
+      </inertial>
+    </link>
+
+    <joint name="wrist_1_joint" type="revolute">
+      <parent link="forearm_link"/>
+      <child link="wrist_1_link"/>
+      <origin xyz="0 0 0.3922" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-3.14159" upper="3.14159" effort="28.0" velocity="3.14"/>
+      <dynamics damping="0.2" friction="0.05"/>
+    </joint>
+
+    <!-- Joint 5: Wrist 2 -->
+    <link name="wrist_2_link">
+      <visual>
+        <geometry>
+          <cylinder radius="0.035" length="0.0997"/>
+        </geometry>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
+        <material name="light_gray"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="0.035" length="0.0997"/>
+        </geometry>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="1.0"/>
+        <inertia ixx="0.0015" ixy="0.0" ixz="0.0" iyy="0.0015" iyz="0.0" izz="0.001"/>
+      </inertial>
+    </link>
+
+    <joint name="wrist_2_joint" type="revolute">
+      <parent link="wrist_1_link"/>
+      <child link="wrist_2_link"/>
+      <origin xyz="0 0.09 0.08" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-3.14159" upper="3.14159" effort="28.0" velocity="3.14"/>
+      <dynamics damping="0.2" friction="0.05"/>
+    </joint>
+
+    <!-- Joint 6: Wrist 3 -->
+    <link name="wrist_3_link">
+      <visual>
+        <geometry>
+          <cylinder radius="0.03" length="0.05"/>
+        </geometry>
+        <origin xyz="0 0 0.025" rpy="0 0 0"/>
+        <material name="metallic_blue"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="0.03" length="0.05"/>
+        </geometry>
+        <origin xyz="0 0 0.025" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.5"/>
+        <inertia ixx="0.0005" ixy="0.0" ixz="0.0" iyy="0.0005" iyz="0.0" izz="0.0003"/>
+      </inertial>
+    </link>
+
+    <joint name="wrist_3_joint" type="revolute">
+      <parent link="wrist_2_link"/>
+      <child link="wrist_3_link"/>
+      <origin xyz="0 0 0.0997" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-3.14159" upper="3.14159" effort="28.0" velocity="3.14"/>
+      <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <!-- Tool Flange Link -->
+    <link name="tool0"/>
+    <joint name="flange_joint" type="fixed">
+      <parent link="wrist_3_link"/>
+      <child link="tool0"/>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>

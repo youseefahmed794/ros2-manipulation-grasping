@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>manipulation_grasping</name>
+  <version>0.1.0</version>
+  <description>
+    ROS 2 Autonomous Robotic Manipulation &amp; Physical AI Stack: 6-DOF Arm with
+    Parallel-Jaw Gripper, Numerical Damped Least Squares (Levenberg-Marquardt)
+    Inverse Kinematics, Quintic Trajectory Generation, 3D RGB-D Perception
+    (RANSAC plane removal &amp; Euclidean clustering), Antipodal Grasp Sampling,
+    and Autonomous Pick-and-Place State Sequencer in Gazebo Harmonic.
+  </description>
+  <maintainer email="youseefahmed794@gmail.com">Youseef Abdel Tawwab</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <!-- Core ROS 2 -->
+  <depend>rclcpp</depend>
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+
+  <!-- Simulation & Visualization -->
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>xacro</exec_depend>
+
+  <!-- Python Dependencies -->
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
+  <exec_depend>python3-matplotlib</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
+  <!-- Testing -->
+  <test_depend>ament_cmake_pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

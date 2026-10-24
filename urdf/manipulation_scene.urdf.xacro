@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot name="manipulation_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Include sub-macros -->
+  <xacro:include filename="$(find manipulation_grasping)/urdf/arm_6dof.urdf.xacro"/>
+  <xacro:include filename="$(find manipulation_grasping)/urdf/gripper.urdf.xacro"/>
+  <xacro:include filename="$(find manipulation_grasping)/urdf/camera_mount.urdf.xacro"/>
+
+  <!-- World Frame -->
+  <link name="world"/>
+
+  <!-- Heavy Mounting Pedestal -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.15" length="0.5"/>
+      </geometry>
+      <origin xyz="0 0 0.25" rpy="0 0 0"/>
+      <material name="pedestal_color">
+        <color rgba="0.15 0.15 0.18 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.15" length="0.5"/>
+      </geometry>
+      <origin xyz="0 0 0.25" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="50.0"/>
+      <origin xyz="0 0 0.25" rpy="0 0 0"/>
+      <inertia ixx="1.5" ixy="0.0" ixz="0.0" iyy="1.5" iyz="0.0" izz="0.5"/>
+    </inertial>
+  </link>
+
+  <joint name="world_to_base" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Instantiate 6-DOF Arm -->
+  <xacro:arm_6dof parent="base_link">
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+  </xacro:arm_6dof>
+
+  <!-- Instantiate Parallel Gripper attached to tool0 flange -->
+  <xacro:parallel_gripper parent="tool0">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:parallel_gripper>
+
+  <!-- Instantiate Overhead Camera Stand positioned at base -->
+  <xacro:overhead_camera parent="base_link">
+    <origin xyz="0.15 0.45 0.5" rpy="0 0 0"/>
+  </xacro:overhead_camera>
+
+  <!-- Gazebo Harmonic Joint State & Trajectory Controller Plugins -->
+  <gazebo>
+    <plugin
+      filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
+      <topic>/joint_states</topic>
+    </plugin>
+    <plugin
+      filename="gz-sim-joint-trajectory-controller-system"
+      name="gz::sim::systems::JointTrajectoryController">
+      <topic>/joint_trajectory_controller/joint_trajectory</topic>
+    </plugin>
+  </gazebo>
+
+</robot>

@@ -1,0 +1,49 @@
+/**:
+  ros__parameters:
+    # ── Kinematics & Solver Settings ──────────────────────────────────
+    kinematics:
+      pos_tolerance_m: 0.001
+      rot_tolerance_rad: 0.002
+      max_iterations: 120
+      damping_lambda_0: 0.04
+      adaptive_damping: true
+      null_space_weight: 0.05
+      tcp_offset_z: 0.14
+
+    # ── Trajectory Generation Settings ────────────────────────────────
+    trajectory:
+      profile_type: "quintic"   # "quintic", "trapezoidal", "linear"
+      default_duration_s: 3.0
+      waypoint_dt_s: 0.02
+      cartesian_step_size_m: 0.008
+      max_joint_velocity_rad_s: 3.14
+      max_joint_accel_rad_s2: 6.28
+
+    # ── 3D Perception Pipeline Settings ───────────────────────────────
+    perception:
+      voxel_size_m: 0.005
+      ransac_plane_threshold_m: 0.012
+      ransac_max_iterations: 150
+      cluster_tolerance_m: 0.035
+      min_cluster_points: 30
+      max_cluster_points: 15000
+      roi_x_bounds: [0.20, 0.85]
+      roi_y_bounds: [-0.45, 0.45]
+      roi_z_bounds: [-0.10, 0.80]
+
+    # ── Grasp Planning Settings ───────────────────────────────────────
+    grasp_planner:
+      gripper_max_width_m: 0.085
+      gripper_min_width_m: 0.015
+      friction_coefficient: 0.50
+      standoff_distance_m: 0.10
+      num_samples: 60
+      approach_type: "top_down_and_angled"
+
+    # ── Pick-and-Place State Sequencer ────────────────────────────────
+    sequencer:
+      home_configuration: [0.0, -0.785, 1.571, -0.785, 1.571, 0.0]
+      place_target_xyz: [0.25, 0.45, 0.76]
+      lift_height_m: 0.12
+      gripper_close_stroke_m: 0.015
+      gripper_open_stroke_m: 0.040

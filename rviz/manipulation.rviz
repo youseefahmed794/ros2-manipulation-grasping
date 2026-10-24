@@ -1,0 +1,65 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Ground Grid
+      Value: true
+      Plane Cell Count: 20
+      Cell Size: 0.1
+      Color: 180; 180; 180
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Value: true
+      Description Topic:
+        Value: /robot_description
+      Alpha: 1.0
+    - Class: rviz_default_plugins/TF
+      Name: TF Frames
+      Value: true
+      Show Names: true
+      Show Axes: true
+      Frame Timeout: 15
+    - Class: rviz_default_plugins/PointCloud2
+      Name: RGB-D PointCloud
+      Value: true
+      Topic:
+        Value: /camera/points
+        Depth: 5
+      Color Transformer: AxisColor
+      Axis: Z
+      Size (m): 0.005
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Segmented Objects OBB
+      Value: true
+      Topic:
+        Value: /perception/object_markers
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Antipodal Grasps & Approach
+      Value: true
+      Topic:
+        Value: /manipulation/grasp_markers
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Cartesian Trajectory Path
+      Value: true
+      Topic:
+        Value: /manipulation/trajectory_markers
+  Global Options:
+    Background Color: 30; 30; 35
+    Fixed Frame: base_link
+    Frame Rate: 30
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 1.8
+      Pitch: 0.55
+      Yaw: 0.85
+      Target Frame: base_link
+      Focal Point:
+        X: 0.35
+        Y: 0.10
+        Z: 0.35
