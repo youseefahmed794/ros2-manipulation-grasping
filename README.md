@@ -5,6 +5,7 @@
 [![C++17](https://img.shields.io/badge/C++-17-00599C?logo=c%2B%2B)](https://en.cppreference.com/w/cpp/17)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python)](https://python.org)
 [![Tests](https://img.shields.io/badge/Tests-23%20Passed%20(100%25)-brightgreen)](https://github.com/youseefahmed794/ros2-manipulation-grasping)
+[![Benchmarks](https://img.shields.io/badge/Benchmarks-Empirical%20Report-success)](docs/BENCHMARK_REPORT.md)
 [![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
