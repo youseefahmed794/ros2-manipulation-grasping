@@ -34,6 +34,8 @@ class TrajectoryMetrics:
     peak_acceleration: float
     peak_jerk: float
     integrated_squared_jerk: float
+    min_manipulability: Optional[float] = None
+    mean_manipulability: Optional[float] = None
 
 
 class QuinticPolynomial:
@@ -327,9 +329,33 @@ class TrajectoryGenerator:
 
         return True, trajectory
 
-    @staticmethod
-    def compute_metrics(trajectory: List[TrajectoryPoint]) -> TrajectoryMetrics:
-        """Calculate academic benchmark metrics for trajectory smoothness."""
+    def compute_manipulability_profile(
+        self, trajectory: List[TrajectoryPoint]
+    ) -> Tuple[np.ndarray, float, float]:
+        """Compute Yoshikawa manipulability index w(q) = sqrt(det(J(q) J(q)^T)) along trajectory.
+
+        Args:
+            trajectory: List of trajectory points with joint positions.
+
+        Returns:
+            Tuple of (profile array, minimum manipulability, mean manipulability).
+        """
+        w_vals = []
+        for pt in trajectory:
+            J = self.kinematics.compute_jacobian(pt.positions)
+            JJT = J @ J.T
+            det_val = float(np.linalg.det(JJT))
+            w = float(np.sqrt(max(0.0, det_val)))
+            w_vals.append(w)
+        w_arr = np.array(w_vals)
+        return w_arr, float(np.min(w_arr)), float(np.mean(w_arr))
+
+    def compute_metrics(
+        self,
+        trajectory: List[TrajectoryPoint],
+        include_manipulability: bool = True,
+    ) -> TrajectoryMetrics:
+        """Calculate academic benchmark metrics for trajectory smoothness and singularity proximity."""
         assert len(trajectory) > 1, "Trajectory must have at least 2 points"
         duration = trajectory[-1].time - trajectory[0].time
         dt = trajectory[1].time - trajectory[0].time
@@ -343,13 +369,15 @@ class TrajectoryGenerator:
         if trajectory[0].jerks is not None:
             jerks = np.array([pt.jerks for pt in trajectory])
             peak_jerk = float(np.max(np.abs(jerks)))
-            # Integral of squared jerk sum over all joints
             isj = float(np.sum(jerks ** 2) * dt)
         else:
-            # Numerical derivative of acceleration
             jerks = np.gradient(accelerations, dt, axis=0)
             peak_jerk = float(np.max(np.abs(jerks)))
             isj = float(np.sum(jerks ** 2) * dt)
+
+        min_w, mean_w = None, None
+        if include_manipulability and hasattr(self, "kinematics") and self.kinematics is not None:
+            _, min_w, mean_w = self.compute_manipulability_profile(trajectory)
 
         return TrajectoryMetrics(
             duration=duration,
@@ -358,4 +386,6 @@ class TrajectoryGenerator:
             peak_acceleration=peak_a,
             peak_jerk=peak_jerk,
             integrated_squared_jerk=isj,
+            min_manipulability=min_w,
+            mean_manipulability=mean_w,
         )

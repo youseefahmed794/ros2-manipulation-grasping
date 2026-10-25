@@ -82,6 +82,15 @@ def test_joint_and_cartesian_trajectory_generation():
     assert metrics.duration == 2.0
     assert metrics.peak_velocity > 0.0
     assert metrics.integrated_squared_jerk > 0.0
+    assert metrics.min_manipulability is not None
+    assert metrics.min_manipulability > 0.0
+    assert metrics.mean_manipulability >= metrics.min_manipulability
+
+    # Test Yoshikawa manipulability profile directly
+    w_profile, min_w, mean_w = gen.compute_manipulability_profile(traj)
+    assert len(w_profile) == len(traj)
+    assert min_w > 0.0
+    assert np.isclose(min_w, metrics.min_manipulability)
 
     # Cartesian straight path test
     T_start, _ = engine.forward_kinematics(q_start)
