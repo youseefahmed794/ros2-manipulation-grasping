@@ -66,8 +66,9 @@ Eigen::Matrix4d KinematicsEngine::forward_kinematics(
     }
   }
 
-  Eigen::Matrix4d T_tcp = T_curr;
-  T_tcp(2, 3) += tcp_offset_z_;
+  Eigen::Matrix4d T_tcp_offset = Eigen::Matrix4d::Identity();
+  T_tcp_offset(2, 3) = tcp_offset_z_;
+  Eigen::Matrix4d T_tcp = T_curr * T_tcp_offset;
   if (all_frames) {
     all_frames->push_back(T_tcp);
   }
